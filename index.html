@@ -676,7 +676,7 @@ document.addEventListener('click', (e) => {
 /* ===== Duration scroll picker (15-min steps, 15min → 5hr) ===== */
 const DURATIONS = (() => {
   const arr = [];
-  for (let m = 15; m <= 300; m += 15) {
+  const push = (m) => {
     const h = Math.floor(m / 60);
     const min = m % 60;
     let label;
@@ -684,7 +684,11 @@ const DURATIONS = (() => {
     else if (min === 0) label = `${h} hr`;
     else label = `${h} hr ${min} min`;
     arr.push({ value: m, label });
-  }
+  };
+  // 8–15 分钟：每分钟一档（短测常用）
+  for (let m = 8; m <= 15; m++) push(m);
+  // 30 分钟起：每 15 分钟一档
+  for (let m = 30; m <= 300; m += 15) push(m);
   return arr;
 })();
 const ITEM_HEIGHT = 44;
@@ -696,7 +700,7 @@ DURATIONS.forEach(d => {
   div.className = 'picker-item';
   div.dataset.value = d.value;
   div.textContent = d.label;
-  div.addEventListener('click', () => scrollToValue(d.value));
+  div.addEventListener('click', () => setDurationByValue(d.value, true));
   pickerList.appendChild(div);
 });
 
@@ -710,10 +714,15 @@ function updateActiveItem() {
   if (items[index]) selectedDuration = parseInt(items[index].dataset.value);
 }
 
-function scrollToValue(value) {
+// 按「值」定位并选中，不依赖滚动位置，避免初始化时平滑滚动未完成导致默认值错位
+function setDurationByValue(value, smooth) {
   const idx = DURATIONS.findIndex(d => d.value === value);
   if (idx < 0) return;
-  pickerList.scrollTo({ top: idx * ITEM_HEIGHT, behavior: 'smooth' });
+  selectedDuration = value;
+  pickerList.querySelectorAll('.picker-item')
+    .forEach((it, i) => it.classList.toggle('active', i === idx));
+  if (smooth) pickerList.scrollTo({ top: idx * ITEM_HEIGHT, behavior: 'smooth' });
+  else pickerList.scrollTop = idx * ITEM_HEIGHT;
 }
 
 let scrollTimer = null;
@@ -728,9 +737,8 @@ function snapToNearest() {
   updateActiveItem();
 }
 
-// 初始选中 90 分钟
-scrollToValue(90);
-setTimeout(updateActiveItem, 100);
+// 初始选中 90 分钟（等布局完成后再定位）
+requestAnimationFrame(() => setDurationByValue(90, false));
 
 // ==================== Analog Clock ====================
 const canvas = document.getElementById('clock');
