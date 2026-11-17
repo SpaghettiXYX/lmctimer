@@ -319,6 +319,12 @@
       transparent 0%, hsl(0,0%,0%) 22%, hsl(0,0%,0%) 78%, transparent 100%);
     mask-image: linear-gradient(to bottom,
       transparent 0%, hsl(0,0%,0%) 22%, hsl(0,0%,0%) 78%, transparent 100%);
+    /* Rule 4: 容器整体 blur 渐显（只动 filter，避免覆盖 .disabled 的 opacity） */
+    animation: frameBlurIn 120ms ease forwards;
+  }
+  @keyframes frameBlurIn {
+    from { filter: blur(6px); }
+    to   { filter: blur(0); }
   }
   .picker-highlight {
     position: absolute;
@@ -354,6 +360,10 @@
     transition: color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
     user-select: none;
+    /* Rule 4: 逐项 blur(6px) 渐显，120ms，字间错开 30ms */
+    opacity: 0;
+    animation: fadeBlurIn 120ms ease forwards;
+    animation-delay: calc(var(--i, 0) * 30ms);
   }
   .picker-item.active {
     color: #fff;
@@ -695,11 +705,12 @@ const ITEM_HEIGHT = 44;
 const pickerList = document.getElementById('pickerList');
 const durationPicker = document.getElementById('durationPicker');
 
-DURATIONS.forEach(d => {
+DURATIONS.forEach((d, i) => {
   const div = document.createElement('div');
   div.className = 'picker-item';
   div.dataset.value = d.value;
   div.textContent = d.label;
+  div.style.setProperty('--i', i);   // Rule 4: 30ms 字间错开
   div.addEventListener('click', () => setDurationByValue(d.value, true));
   pickerList.appendChild(div);
 });
