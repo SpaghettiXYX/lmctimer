@@ -450,13 +450,6 @@
     margin-top: 4px;
   }
   /* ===== Rule 6: 数字 tabular-nums ===== */
-  .digital-time {
-    font-family: "SF Mono", "Menlo", monospace;
-    font-size: 0.85rem;
-    font-variant-numeric: tabular-nums;
-    color: hsl(225, 10%, 60%);
-    margin-top: 4px;
-  }
   .credit {
     position: fixed;
     right: clamp(14px, 2vw, 30px);
@@ -531,14 +524,13 @@
       <div class="exam-info">
         <div class="subject-display" id="subjectDisplay"></div>
         <div class="time-block">
-          <div class="time-row"><span class="time-label">Start</span><span class="time-value" id="startTime">--:--</span></div>
-          <div class="time-row"><span class="time-label">End</span><span class="time-value" id="endTime">--:--</span></div>
+          <div class="time-row"><span class="time-label">Start</span><span class="time-value" id="startTime">--:--:--</span></div>
+          <div class="time-row"><span class="time-label">End</span><span class="time-value" id="endTime">--:--:--</span></div>
         </div>
         <div class="status" id="status"></div>
       </div>
       <div class="time-server-info">
         Synced with Apple Time Server (time.apple.com)
-        <div class="digital-time" id="digitalTime">--:--:--</div>
       </div>
     </div>
 
@@ -841,9 +833,6 @@ function drawClock() {
   ctx.arc(centerX, centerY, 3, 0, 2 * Math.PI);
   ctx.fillStyle = '#fff';
   ctx.fill();
-
-  document.getElementById('digitalTime').textContent =
-    `${String(now.getHours()).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
 }
 
 function drawHand(angle, length, width, color) {
@@ -886,15 +875,15 @@ const stopWrap = document.getElementById('stopWrap');
 
 function formatClockTime(ts) {
   const d = new Date(ts);
-  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
 }
 function setStatus(text, color) {
   statusEl.style.color = color;
   typewriter(statusEl, text);
 }
 function resetTimeDisplay() {
-  startTimeEl.textContent = '--:--';
-  endTimeEl.textContent = '--:--';
+  startTimeEl.textContent = '--:--:--';
+  endTimeEl.textContent = '--:--:--';
 }
 
 function checkExamEnd() {
