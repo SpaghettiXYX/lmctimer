@@ -279,17 +279,25 @@
     margin-top: 4px;
   }
   .credit {
-    margin-top: 8px;
-    font-size: 0.72rem;
-    color: hsl(225, 10%, 45%);
-    letter-spacing: 0.05em;
+    position: fixed;
+    right: clamp(14px, 2vw, 30px);
+    bottom: clamp(10px, 1.6vh, 20px);
+    font-size: 0.66rem;
+    font-weight: 460;
+    letter-spacing: 0.14em;
+    font-variant-numeric: tabular-nums;
+    color: hsl(225, 10%, 36%);
+    user-select: none;
+    transition: color 0.25s ease;
+    z-index: 10;
   }
   .credit a {
-    color: hsl(217, 70%, 70%);
+    color: inherit;
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 0.25s ease;
   }
-  .credit a:hover { color: hsl(217, 80%, 85%); }
+  .credit:hover { color: hsl(225, 12%, 56%); }
+  .credit a:hover { color: hsl(217, 70%, 72%); }
 
   .bell-indicator {
     position: absolute;
@@ -352,7 +360,6 @@
       <div class="time-server-info">
         Synced with Apple Time Server (time.apple.com)
         <div class="digital-time" id="digitalTime">--:--:--</div>
-        <div class="credit">GitHub: <a href="https://github.com/spaghettixyx" target="_blank" rel="noopener">spaghettixyx</a></div>
       </div>
     </div>
 
@@ -399,6 +406,8 @@
       </div>
     </div>
   </div>
+
+  <div class="credit">© 2025-2026 <a href="https://github.com/spaghettixyx" target="_blank" rel="noopener">spaghettixyx</a></div>
 
 <script>
 /* ===== Rule 4: 流式打字引擎 ===== */
